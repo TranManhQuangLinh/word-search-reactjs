@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { memo } from 'react'
 import { Context } from '../../App'
 
@@ -10,20 +10,19 @@ function TraiNghia({ styles }) {
         context.setType('trai nghia')
         if (context.word !== '') {
             context.setResultList([])
-            context.infoText.style.color = "#000";
-            context.loadingIcon.classList.add(styles.display)
-            context.loadingText.innerHTML = 'Loading...'
+            context.setLoading(true)
+
 
             axios.get(`https://api.datamuse.com/words?rel_ant=${context.word}&qe=rel_ant&md=dp`)
                 .then(response => {
                     const result = response.data
-                    context.loadingIcon.classList.remove(context.loadingIcon.classList.remove(styles.display))
-                    context.loadingText.innerHTML = ''
+                    context.setLoading(false)
+
 
                     if (result.length === 0) {
-                        context.infoText.innerHTML = `Không thể tìm thấy từ trái nghĩa với <span>"${context.word}"</span>. Mời nhập lại. `
+                        context.setInfoText(`Không thể tìm thấy từ trái nghĩa với <span>"${context.word}"</span>. Mời nhập lại. `)
                     } else {
-                        context.infoText.innerHTML = `Các từ trái nghĩa tìm được:`
+                        context.setInfoText(`Các từ trái nghĩa tìm được:`)
 
                         context.setResultList(result.map(res => {
                             let definition = ''
@@ -48,7 +47,7 @@ function TraiNghia({ styles }) {
                     }
                 })
                 .catch((e) => {
-                    context.infoText.innerHTML = 'Failed to load data from API'
+                    context.setInfoText('Failed to load data from API')
                     alert('Failed to load data from API')
                     console.log(e)
 

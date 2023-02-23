@@ -3,23 +3,21 @@ import styles from './Container.module.css'
 import DongAm from '../tags/DongAm'
 import DongNghia from '../tags/DongNghia'
 import TraiNghia from '../tags/TraiNghia'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useRef } from 'react'
 import { Context } from '../../App'
 
 function Container() {
 
     const context = useContext(Context)
-    const loadingIcon = useRef()
-    const loadingText = useRef()
-    const infoText = useRef()
     const result_list = useRef()
 
     const homeClickEffect = () => {
+        window.scrollTo(0, 0)
 
         context.setResultList([])
-        
+
         context.setSearchCheck(!context.searchCheck)
-        
+
         switch (context.type) {
             case 'dong am':
                 document.getElementById('spell_like').click()
@@ -33,15 +31,6 @@ function Container() {
         }
 
     }
-
-    // set element khi component mounted
-    useEffect(() => {
-        context.setLoadingIcon(loadingIcon.current)
-        context.setLoadingText(loadingText.current)
-        context.setInfoText(infoText.current)
-    }, [])
-
-    // useEffect(() => context.setWord(word))
 
     return (
         <>
@@ -59,27 +48,28 @@ function Container() {
                     <i className="fas fa-search"></i>
                     <span className="material-icons" onClick={() => {
                         context.setWord('')
-                        context.infoText.innerHTML = 'Type any existing word and press enter to get meaning, example, synonyms, etc.'
+                        context.setInfoText('Type any existing word and press enter to get meaning, example, synonyms, etc.')
                         context.setResultList([])
                         document.getElementById('search_input').focus()
                     }}
 
                     >close</span>
                 </div>
-                <div className={styles.search_button}>
-                    <button type="button" className="btn btn-primary" onClick={() => {
-                        if(context.word){homeClickEffect()}
-                    }}>
-                        <i className="fas fa-search"></i>
-                        Search
-                    </button>
-                </div>
-                <div className={styles.loading}>
-                    <div id={styles.loading_icon} ref={loadingIcon}></div>
-                    <div id={styles.loading_text} ref={loadingText}></div>
-                </div>
-                <p ref={infoText}>Type any existing word and press enter to get meaning, example, synonyms, etc.</p>
-                <ol ref={result_list}>
+                
+                <button type="button" className={`btn btn-primary ${styles.search_button}`} onClick={() => {
+                    if (context.word) { homeClickEffect() }
+                }}>
+                    Search
+                </button>
+
+                <p style={{ marginTop: '20px' }}>{context.infoText}</p>
+
+                {context.loading && (<div className={styles.loading}>
+                    <div id={styles.loading_icon}></div>
+                    <div id={styles.loading_text}>Loading...</div>
+                </div>) }
+
+                <ol ref={result_list} className={styles.result_list}>
                     <Routes>
                         <Route path='/' element={<></>} />
                         <Route path='/DongAm' element={<DongAm styles={styles} />} />
@@ -94,4 +84,3 @@ function Container() {
 }
 
 export default Container
- 

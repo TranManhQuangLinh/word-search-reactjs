@@ -11,12 +11,11 @@ function App() {
   const [word, setWordState] = useState('')
   const [resultList, setResultListState] = useState([])
   const [searchCheck, setSearchCheckState] = useState(false)
-  const [loadingIcon, setLoadingIconState] = useState(<div id={styles.loading_icon} bis_skin_checked="1"></div>)
-  const [loadingText, setLoadingTextState] = useState(<div id={styles.loading_text} bis_skin_checked="1"></div>)
-  const [infoText, setInfoTextState] = useState(<p>Type any existing word and press enter to get meaning, example, synonyms, etc.</p>)
-  
+  const [loading, setLoadingState] = useState(false)
+  const [infoText, setInfoTextState] = useState('Type any existing word\n and press enter to get meaning, example, synonyms, etc.')
 
-  
+
+
   return (
     <BrowserRouter>
       <Context.Provider value={
@@ -24,22 +23,24 @@ function App() {
           type: type,
           word: word,
           searchCheck: searchCheck,
-          loadingIcon: loadingIcon,
-          loadingText: loadingText,
+          loading: loading,
           infoText: infoText,
           resultList: resultList,
           setType: type => setTypeState(type),
           setWord: word => setWordState(word),
           setSearchCheck: searchCheck => setSearchCheckState(searchCheck),
-          setLoadingIcon: loadingIcon => setLoadingIconState(loadingIcon),
-          setLoadingText: loadingText => setLoadingTextState(loadingText),
+          setLoading: loading => setLoadingState(loading),
           setInfoText: infoText => setInfoTextState(infoText),
           setResultList: resultList => setResultListState(resultList)
 
         }
       }>
-        <Header />
-        <Container />
+        <div className='wrapper'>
+          <div className='card'>
+            <Header />
+            <Container />
+          </div>
+        </div>
       </Context.Provider>
     </BrowserRouter>
   );

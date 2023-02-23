@@ -3,5 +3,10 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, .1);
 }
 
+.tag {
+    color: white;
+}
 
-
+.tag:hover {
+    color: #94e6ff;
+}
