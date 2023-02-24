@@ -22,7 +22,6 @@ function Container() {
     const infoText = useSelector(state => state.infoText)
     const searchCheck = useSelector(state => state.searchCheck)
 
-    console.log('infoText', infoText);
 
     const dispatch = useDispatch()
 
