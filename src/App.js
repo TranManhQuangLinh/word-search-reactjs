@@ -1,7 +1,7 @@
 import './App.css';
 import Header from './components/Header';
 import Container from './components/Container';
-import styles from './components/Container/Container.module.css'
+
 import { BrowserRouter } from 'react-router-dom';
 import { createContext, useState } from 'react';
 

@@ -1,31 +1,41 @@
 import axios from 'axios'
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { memo } from 'react'
-import { Context } from '../../App'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { setType } from '../../actions/type'
+import { setWord } from '../../actions/word'
+import { setResultList } from '../../actions/resultList'
+import { setSearchCheck } from '../../actions/searchCheck'
+import { setInfoText } from '../../actions/infoText'
+import { setLoading } from '../../actions/loading'
 
 function DongAm({ styles }) {
-    const context = useContext(Context)
+    const word = useSelector(state => state.word)
+    const searchCheck = useSelector(state => state.searchCheck)
+    const resultList = useSelector(state => state.resultList)
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        // console.log(context)
-        if (context.word !== '') {
-            context.setResultList([])
-            context.setLoading(true)
+        if (word !== '') {
+            dispatch(setResultList([]))
+            dispatch(setLoading(true))
 
 
-            axios.get(`https://api.datamuse.com/words?sp=${context.word}&qe=sp&md=dp`)
+            axios.get(`https://api.datamuse.com/words?sp=${word}&qe=sp&md=dp`)
                 .then(response => {
                     const result = response.data
                     // console.log(result);
-                    context.setLoading(false)
+                    dispatch(setLoading(false))
 
 
                     if (result.length === 0) {
-                        context.setInfoText(`Không thể tìm thấy từ đồng âm với <span>"${context.word}"</span>. Mời nhập lại. `)
+                        dispatch(setInfoText(`Không thể tìm thấy từ đồng âm với <span>"${word}"</span>. Mời nhập lại. `))
                     } else {
-                        context.setInfoText(`Các từ đồng âm tìm được:`)
+                        dispatch(setInfoText(`Các từ đồng âm tìm được:`))
 
-                        context.setResultList(result.map(res => {
+                        dispatch(setResultList(result.map(res => {
                             let definition = ''
                             if (res.defs === undefined)
                                 definition = 'undefined'
@@ -44,22 +54,22 @@ function DongAm({ styles }) {
                                     <span className={styles.result_span}>{definition}</span>
                                 </li>
                             )
-                        }))
+                        })))
                     }
                 })
                 .catch((e) => {
-                    context.setInfoText('Failed to load data from API')
+                    dispatch(setInfoText('Failed to load data from API'))
                     alert('Failed to load data from API')
                     console.log(e)
 
                 })
         }
 
-    }, [context.searchCheck])
+    }, [searchCheck])
 
     return (
         <>
-            {context.resultList}
+            {resultList}
         </>
     )
 }

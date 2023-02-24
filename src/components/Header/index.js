@@ -1,13 +1,23 @@
 import logo from '../../img/logo.jpg'
-import clsx from 'clsx'
 import styles from './Header.module.css'
+
 import { Link } from 'react-router-dom'
-import { useContext } from 'react'
-import { Context } from '../../App'
+import clsx from 'clsx'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { setType } from '../../actions/type'
+import { setWord } from '../../actions/word'
+import { setResultList } from '../../actions/resultList'
+import { setSearchCheck } from '../../actions/searchCheck'
+import { setInfoText } from '../../actions/infoText'
+import { setLoading } from '../../actions/loading'
 
 
 function Header() {
-    const context = useContext(Context)
+    const type = useSelector(state => state.type)
+    const word = useSelector(state => state.word)
+    const searchCheck = useSelector(state => state.searchCheck)
+    const dispatch = useDispatch()
 
     return (
         <header className={clsx("container-fluid", styles.header)}>
@@ -17,24 +27,24 @@ function Header() {
                     
                         <ul className='navbar-nav'>
                             <li className='nav-item'>
-                                <Link id="spell_like" className={clsx('nav-link', styles.tag, { 'active': context.type === 'dong am' })} aria-current="page" to="/DongAm" onClick={() => {
-                                    if(context.word){context.setInfoText('')}
-                                    context.setType('dong am')
-                                    context.setSearchCheck(!context.searchCheck)
+                                <Link id="spell_like" className={clsx('nav-link', styles.tag, { 'active': type === 'dong am' })} aria-current="page" to="/DongAm" onClick={() => {
+                                    if(word){dispatch(setInfoText(''))}
+                                    dispatch(setType('dong am'))
+                                    dispatch(setSearchCheck(!searchCheck))
                                 }}>Đồng âm</Link>
                             </li>
                             <li className='nav-item'>
-                                <Link id="mean_like" className={clsx('nav-link', styles.tag, { 'active': context.type === 'dong nghia' })} to="/DongNghia" onClick={() => {
-                                    if(context.word){context.setInfoText('')}
-                                    context.setType('dong nghia')
-                                    context.setSearchCheck(!context.searchCheck)
+                                <Link id="mean_like" className={clsx('nav-link', styles.tag, { 'active': type === 'dong nghia' })} to="/DongNghia" onClick={() => {
+                                    if(word){dispatch(setInfoText(''))}
+                                    dispatch(setType('dong nghia'))
+                                    dispatch(setSearchCheck(!searchCheck))
                                 }}>Đồng nghĩa</Link>
                             </li>
                             <li className='nav-item'>
-                                <Link id='antonyms' className={clsx('nav-link', styles.tag, { 'active': context.type === 'trai nghia' })} to="/TraiNghia" onClick={() => {
-                                    if(context.word){context.setInfoText('')}
-                                    context.setType('trai nghia')
-                                    context.setSearchCheck(!context.searchCheck)
+                                <Link id='antonyms' className={clsx('nav-link', styles.tag, { 'active': type === 'trai nghia' })} to="/TraiNghia" onClick={() => {
+                                    if(word){dispatch(setInfoText(''))}
+                                    dispatch(setType('trai nghia'))
+                                    dispatch(setSearchCheck(!searchCheck))
                                 }}>Trái nghĩa</Link>
                             </li>
                         </ul>

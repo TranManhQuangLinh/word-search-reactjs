@@ -1,31 +1,41 @@
 import axios from 'axios'
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { memo } from 'react'
-import { Context } from '../../App'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { setType } from '../../actions/type'
+import { setWord } from '../../actions/word'
+import { setResultList } from '../../actions/resultList'
+import { setSearchCheck } from '../../actions/searchCheck'
+import { setInfoText } from '../../actions/infoText'
+import { setLoading } from '../../actions/loading'
 
 
 function DongNghia({ styles }) {
-    const context = useContext(Context)
+    const word = useSelector(state => state.word)
+    const searchCheck = useSelector(state => state.searchCheck)
+    const resultList = useSelector(state => state.resultList)
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        // console.log(context)
-        if (context.word !== '') {
-            context.setResultList([])
-            context.setLoading(true)
+        if (word !== '') {
+            dispatch(setResultList([]))
+            dispatch(setLoading(true))
 
-            axios.get(`https://api.datamuse.com/words?rel_syn=${context.word}&qe=rel_syn&md=dp`)
+            axios.get(`https://api.datamuse.com/words?rel_syn=${word}&qe=rel_syn&md=dp`)
                 .then(response => {
                     const result = response.data
                     // console.log(result);
-                    context.setLoading(false)
+                    dispatch(setLoading(false))
 
 
                     if (result.length === 0) {
-                        context.setInfoText(`Không thể tìm thấy từ đồng nghĩa với <span>"${context.word}"</span>. Mời nhập lại. `)
+                        dispatch(setInfoText(`Không thể tìm thấy từ đồng nghĩa với <span>"${word}"</span>. Mời nhập lại. `))
                     } else {
-                        context.setInfoText(`Các từ đồng nghĩa tìm được:`)
+                        dispatch(setInfoText(`Các từ đồng nghĩa tìm được:`))
 
-                        context.setResultList(result.map(res => {
+                        dispatch(setResultList(result.map(res => {
                             let definition = ''
                             if (res.defs === undefined)
                                 definition = 'undefined'
@@ -43,31 +53,31 @@ function DongNghia({ styles }) {
                                             className={styles.result_word}
                                             onClick={() => {
 
-                                                context.setWord(res.word)
-                                                context.setSearchCheck(!context.searchCheck)
+                                                dispatch(setWord(res.word))
+                                                dispatch(setSearchCheck(!searchCheck))
                                             }}
                                         >{res.word}</a>
                                     </div>
                                     <span className={styles.result_span}>{definition}</span>
                                 </li>
                             )
-                        }))
+                        })))
                     }
                 })
                 .catch((e) => {
-                    context.setInfoText('Failed to load data from API')
+                    dispatch(setInfoText('Failed to load data from API'))
                     alert('Failed to load data from API')
                     console.log(e)
 
 
                 })
         }
-    }, [context.searchCheck])
+    }, [searchCheck])
 
 
     return (
         <>
-            {context.resultList}
+            {resultList}
         </>
     )
 }
